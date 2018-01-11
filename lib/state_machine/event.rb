@@ -171,7 +171,9 @@ module StateMachine
 
       if transition = transition_for(object)
         # Hack to prevent duplicate key errors
-        object.save unless object.persisted?
+        if object.respond_to?(:persisted?)
+          object.save unless object.persisted?
+        end
         transition.perform(*args)
       else
         on_failure(object)
